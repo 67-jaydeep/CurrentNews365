@@ -1,0 +1,165 @@
+/* ===============================
+   🌈 GLOBAL GLASSY THEME SYSTEM
+   =============================== */
+
+/* Accent Colors */
+:root {
+  --emerald-color: #10b981;
+  --indigo-color: #6366f1;
+  --violet-color: #8b5cf6;
+  --rose-color: #f43f5e;
+  --amber-color: #f59e0b;
+  --accent-color: var(--emerald-color);
+}
+
+/* ===============================
+   🌫️ Global Glassy Surfaces
+   =============================== */
+.glassy,
+.card,
+.modal,
+.chart-container,
+button,
+input,
+textarea {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
+  transition: all 0.25s ease-in-out;
+}
+
+.dark .glassy,
+.dark .card,
+.dark .modal {
+  background: rgba(17, 25, 40, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
+}
+
+/* ===============================
+   🟢 Accent Button Styling
+   =============================== */
+button,
+.btn-primary {
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  transition: all 0.3s ease-in-out;
+}
+
+button:hover,
+.btn-primary:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===============================
+   💠 Accent Outlines & Links
+   =============================== */
+a,
+.text-accent {
+  color: var(--accent-color);
+}
+
+a:hover,
+.text-accent:hover {
+  text-decoration: underline;
+}
+
+/* ===============================
+   📊 Recharts Accent Sync
+   =============================== */
+.recharts-tooltip-wrapper,
+.recharts-default-tooltip {
+  background: rgba(255, 255, 255, 0.25) !important;
+  backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+}
+
+.recharts-default-tooltip-label {
+  color: var(--accent-color) !important;
+  font-weight: 600;
+}
+
+.recharts-line,
+.recharts-bar-rectangle {
+  stroke: var(--accent-color) !important;
+  fill: var(--accent-color) !important;
+}
+
+/* ===============================
+   🪟 Navbar & Modals Enhancement
+   =============================== */
+header,
+.modal,
+.card {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.25),
+    rgba(255, 255, 255, 0.05)
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ===============================
+   🌈 Animated Accent Glow
+   =============================== */
+.glow-accent {
+  box-shadow: 0 0 12px var(--accent-color);
+  animation: pulseAccent 2.5s infinite ease-in-out;
+}
+
+@keyframes pulseAccent {
+  0%,
+  100% {
+    box-shadow: 0 0 12px var(--accent-color);
+  }
+  50% {
+    box-shadow: 0 0 24px var(--accent-color);
+  }
+}
+
+/* ===============================
+   🧱 Card/Chart Elevation
+   =============================== */
+.card,
+.chart-container {
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.chart-container {
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ===============================
+   ☀️ Dark Mode Text Contrast
+   =============================== */
+.dark h1,
+.dark h2,
+.dark h3,
+.dark p,
+.dark span {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+h1,
+h2,
+h3,
+p,
+span {
+  color: rgba(0, 0, 0, 0.8);
+}

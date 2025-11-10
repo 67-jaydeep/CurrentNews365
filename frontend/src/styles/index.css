@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  @apply bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300 ease-soft;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+/* 🎨 Accent Palette Variables */
+:root {
+  --accent-color: #10b981; /* default emerald */
+  --emerald-color: #10b981;
+  --indigo-color: #6366f1;
+  --violet-color: #8b5cf6;
+  --rose-color: #f43f5e;
+  --amber-color: #f59e0b;
+
+  /* gradient variables for user-selected palette */
+  --accent-gradient-start: #10b981;
+  --accent-gradient-end: #14b8a6;
+}
+
+/* 🌈 Button Styles using Accent Gradient */
+.btn-primary {
+  background: linear-gradient(
+    135deg,
+    var(--accent-gradient-start),
+    var(--accent-gradient-end)
+  );
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:hover {
+  opacity: 0.97;
+  transform: translateY(-1px);
+  /* ✨ Ultra subtle gradient glow */
+  box-shadow: 0 0 3px var(--accent-gradient-start),
+              0 0 6px var(--accent-gradient-end);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 🌐 Apply gradient globally to any accent-colored button */
+[class*="bg-[var(--accent-color)]"] {
+  background: linear-gradient(
+    135deg,
+    var(--accent-gradient-start),
+    var(--accent-gradient-end)
+  ) !important;
+  color: #fff !important;
+  border: none !important;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+[class*="bg-[var(--accent-color)]"]:hover {
+  opacity: 0.97;
+  transform: translateY(-1px);
+  box-shadow: 0 0 3px var(--accent-gradient-start),
+              0 0 6px var(--accent-gradient-end);
+}
+
+[class*="bg-[var(--accent-color)]"]:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 🧊 Recharts Accent Sync */
+.recharts-bar-rectangle path,
+.recharts-line path,
+.recharts-area path {
+  fill: var(--accent-color) !important;
+  stroke: var(--accent-color) !important;
+}
+
+.recharts-tooltip-wrapper,
+.recharts-default-tooltip {
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+}
+
+/* 🧭 Hide Scrollbars (global) */
+*::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
