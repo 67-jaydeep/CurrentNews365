@@ -174,6 +174,88 @@ app.locals.refreshCookieOpts = refreshCookieOpts;
 app.locals.createLoginLimiter = createLoginLimiter;
 app.locals.csrfProtection = csrfProtection;
 
+/* ===========================
+   🛡️ Enhanced Security Block
+   =========================== */
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
+const morgan = require('morgan');
+const permissionsPolicy = require('permissions-policy'); // ✅ FIXED HERE
+
+// ✅ Log all incoming requests
+app.use(morgan('combined'));
+
+/*
+  Robust query-clone middleware (REPLACES fragile assignments).
+  Purpose: ensure req.query is a plain, writable object so downstream
+  sanitizers (express-mongo-sanitize) won't attempt to set a getter-only property.
+  This is safe and runs BEFORE mongoSanitize().
+*/
+app.use((req, res, next) => {
+  try {
+    // Replace the getter with a plain object clone (Express 5 issue)
+    const q = req.query;
+    if (q && typeof q === 'object') {
+      const cloned = Object.fromEntries(Object.entries(q));
+      Object.defineProperty(req, 'query', {
+        value: cloned,
+        writable: true,
+        enumerable: true,
+        configurable: true,
+      });
+    }
+  } catch (err) {
+    console.warn('Query immutability patch skipped:', err.message);
+  }
+  next();
+});
+
+// ✅ Safe sanitization (no crash)
+app.use((req, res, next) => {
+  try {
+    require('express-mongo-sanitize')()(req, res, next);
+  } catch (err) {
+    console.warn('mongo-sanitize skipped due to query error:', err.message);
+    next();
+  }
+});
+app.use(require('xss-clean')());
+
+// ✅ Enforce HTTPS in production
+if (NODE_ENV === 'production') {
+  app.use((req, res, next) => {
+    if (req.headers['x-forwarded-proto'] !== 'https') {
+      return res.redirect(`https://${req.headers.host}${req.url}`);
+    }
+    next();
+  });
+}
+
+// ✅ Extend Helmet with additional security headers
+app.use(helmet.noSniff());
+app.use(helmet.referrerPolicy({ policy: 'strict-origin-when-cross-origin' }));
+app.use(
+  permissionsPolicy({
+    features: {
+      geolocation: ['none'],
+      camera: ['none'],
+      microphone: ['none'],
+      fullscreen: ['self'],
+    },
+  })
+);
+
+// ✅ Cache & cross-origin hardening
+app.use((req, res, next) => {
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, private");
+  res.setHeader("Cross-Origin-Resource-Policy", "same-origin");
+  res.setHeader("Cross-Origin-Embedder-Policy", "unsafe-none");
+  next();
+});
+/* ===========================
+   🛡️ End Enhanced Security Block
+   =========================== */
+
 // ✅ Mount routes *after* all middleware
 app.use('/api', require('./routes/media'));
 app.use('/api', routes);
