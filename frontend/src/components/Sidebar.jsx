@@ -92,7 +92,7 @@ export default function Sidebar() {
 
           {/* Footer */}
           <div className="px-3 py-3 border-t border-gray-200 dark:border-gray-800 text-xs text-gray-500 dark:text-gray-400 text-center">
-            {open ? "© 2025 Blogyy" : "©"}
+            {open ? "© 2025 CurrentNews365" : "©"}
           </div>
         </motion.aside>
       )}

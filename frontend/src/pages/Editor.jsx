@@ -145,42 +145,18 @@ export default function Editor() {
     }
   };
 
-  const config = useMemo(
-    () => ({
-      readonly: false,
-      height: "60vh",
-      theme: theme,
-      toolbarSticky: true,
-      buttons: [
-        "source",
-        "bold",
-        "italic",
-        "underline",
-        "ul",
-        "ol",
-        "outdent",
-        "indent",
-        "align",
-        "font",
-        "fontsize",
-        "brush",
-        "paragraph",
-        "table",
-        "link",
-        "image",
-        "video",
-        "quote",
-        "hr",
-        "undo",
-        "redo",
-        "fullsize",
-      ],
-      uploader: { insertImageAsBase64URI: false },
-      image: { editImage: true, openOnDblClick: true, resize: true },
-      defaultActionOnPaste: "insert_as_html",
-    }),
-    [theme]
-  );
+const config = useMemo(
+  () => ({
+    readonly: false,
+    height: "60vh",
+    theme: theme,
+    toolbarSticky: true,
+    uploader: { insertImageAsBase64URI: false },
+    image: { editImage: true, openOnDblClick: true, resize: true },
+    defaultActionOnPaste: "insert_as_html",
+  }),
+  [theme]
+);
 
   const handleEditorChange = (val) => setForm((s) => ({ ...s, content: val }));
 
@@ -246,6 +222,15 @@ export default function Editor() {
               <option value="case-study">Case Study</option>
               <option value="analysis">Analysis</option>
             </select>
+            <input
+  type="text"
+  placeholder="Or enter custom category"
+  value={form.category}
+  onChange={(e) =>
+    setForm((s) => ({ ...s, category: e.target.value }))
+  }
+  className="px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-[var(--accent-color)]"
+/>
             <select
               name="subCategory"
               value={form.subCategory}
@@ -257,6 +242,15 @@ export default function Editor() {
               <option value="mutual-funds">Mutual Funds</option>
               <option value="forex">Forex</option>
             </select>
+            <input
+  type="text"
+  placeholder="Or enter custom sub-category"
+  value={form.subCategory}
+  onChange={(e) =>
+    setForm((s) => ({ ...s, subCategory: e.target.value }))
+  }
+  className="px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-[var(--accent-color)]"
+/>
           </div>
 
           {/* Scheduling */}
@@ -437,6 +431,34 @@ export default function Editor() {
         .prose li::marker {
           color: var(--accent-color);
         }
+        .jodit_fullsize {
+        position: fixed !important;
+        inset: 0 !important;
+        z-index: 9999 !important;
+        background: #fff;
+      }
+
+      .dark .jodit_fullsize {
+      background: #111827;
+      }/* ✅ FORCE JODIT FULLSCREEN ABOVE ADMIN LAYOUT */
+      .jodit-container.jodit_fullsize {
+        position: fixed !important;
+        inset: 0 !important;
+        z-index: 99999 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+      }
+
+      /* Prevent admin layout from clipping fullscreen editor */
+      .jodit-container.jodit_fullsize * {
+        max-height: none !important;
+      }
+
+      /* Dark mode background */
+      .dark .jodit-container.jodit_fullsize {
+        background-color: #111827 !important;
+      }
+
       `}</style>
     </div>
   );

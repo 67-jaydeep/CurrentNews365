@@ -21,7 +21,7 @@ export default function PostDetail() {
   const [related, setRelated] = useState([]);
   const [views, setViews] = useState(0);
   const [loading, setLoading] = useState(true);
-  const siteTitle = "TheLatestNews";
+  const siteTitle = "CurrentNews365";
 
   // Fetch post + related
   useEffect(() => {
@@ -157,7 +157,7 @@ export default function PostDetail() {
 
         {/* --- NAVBAR --- */}
         <header className="sticky top-0 z-40 bg-white/70 dark:bg-gray-800/70 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+          <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
             <Link
               to="/"
               className="text-xl font-bold tracking-tight text-[var(--accent-color)]"
@@ -193,7 +193,7 @@ export default function PostDetail() {
           <div className="text-sm text-gray-500 dark:text-gray-400 mb-6">
             By{" "}
             <span className="font-medium text-gray-700 dark:text-gray-200">
-              TheLatestNews
+              CurrentNews365
             </span>
           </div>
 
@@ -201,7 +201,35 @@ export default function PostDetail() {
             className="prose dark:prose-invert max-w-none"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
+          {(post.source || (post.referenceLinks && post.referenceLinks.length > 0)) && (
+  <div className="mt-8 border-t border-gray-200 dark:border-gray-700 pt-4 text-sm text-gray-600 dark:text-gray-400 space-y-2">
+    {post.source && (
+      <p>
+        <strong>Source:</strong> {post.source}
+      </p>
+    )}
 
+    {post.referenceLinks && post.referenceLinks.length > 0 && (
+      <div>
+        <strong>References:</strong>
+        <ul className="list-disc list-inside mt-1 space-y-1">
+          {post.referenceLinks.map((link, i) => (
+            <li key={i}>
+              <a
+                href={link}
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                className="text-[var(--accent-color)] hover:underline break-all"
+              >
+                {link}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </div>
+)}
           {post.tags?.length > 0 && (
             <div className="mt-8 flex flex-wrap gap-2">
               {post.tags.map((tag) => (
@@ -217,7 +245,13 @@ export default function PostDetail() {
           )}
 
           {/* ✅ Updated Share Bar */}
+          <div className="mt-6 text-xs text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-800 pt-4">
+  <strong>Disclaimer:</strong> This article is based on publicly available
+  information and independent editorial analysis. References to third-party
+  sources, if any, are used solely for informational purposes.
+</div>
           <div className="mt-6 flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
+            
             <Share2 className="w-4 h-4" />
             <span>Share:</span>
             <button

@@ -10,6 +10,7 @@ const cookieParser = require('cookie-parser');
 const csurf = require('csurf');
 const routes = require('./routes');
 const fs = require('fs');
+const seoRoutes = require("./routes/seo");
 
 // 🧩 NEW: import model + bcrypt for admin creation
 const bcrypt = require('bcrypt');
@@ -259,7 +260,7 @@ app.use((req, res, next) => {
 // ✅ Mount routes *after* all middleware
 app.use('/api', require('./routes/media'));
 app.use('/api', routes);
-
+app.use("/", seoRoutes);
 app.use((req, res) => res.status(404).json({ msg: 'Not found' }));
 
 app.use((err, req, res, next) => {

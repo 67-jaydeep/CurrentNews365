@@ -1,0 +1,41 @@
+# ================================
+# Robots.txt for CurrentNews365
+# ================================
+
+User-agent: *
+Allow: /
+
+# --------------------------------
+# Block Admin & Internal Pages
+# --------------------------------
+Disallow: /login
+Disallow: /admin/
+Disallow: /admin/dashboard
+Disallow: /admin/posts
+Disallow: /admin/editor
+
+# --------------------------------
+# Prevent SEO Duplicate Content
+# --------------------------------
+Disallow: /*?tag=
+Disallow: /*?category=
+Disallow: /*?utm_
+Disallow: /*&utm_
+Disallow: /*?ref=
+Disallow: /*&ref=
+
+# --------------------------------
+# Allow Important Public Assets
+# --------------------------------
+Allow: /rss.xml
+Allow: /sitemap.xml
+
+# --------------------------------
+# Crawl Optimization (News Friendly)
+# --------------------------------
+Crawl-delay: 10
+
+# --------------------------------
+# Sitemap Location
+# --------------------------------
+Sitemap: https://currentnews365.com/sitemap.xml

@@ -36,7 +36,6 @@ export const AuthProvider = ({ children }) => {
         }
       } catch (err) {
         const msg = err.response?.data?.msg || err.message;
-        // ✅ stop loop if refresh endpoint fails (401 / 429 / network)
         if (err.response?.status === 429) {
           console.warn("🚫 Rate limit hit on refresh — skipping retry.");
         }
@@ -44,7 +43,6 @@ export const AuthProvider = ({ children }) => {
         clearAccessToken();
         setUser(null);
       } finally {
-        // ensure loader stops even if refresh fails
         setTimeout(() => setLoading(false), 300);
       }
     };
@@ -80,32 +78,44 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // 🌀 Loader while checking session
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.4 }}
-          className="flex flex-col items-center"
-        >
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ repeat: Infinity, duration: 1.2, ease: "linear" }}
-            className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full"
-          ></motion.div>
-          <p className="mt-4 text-gray-600 dark:text-gray-300 text-sm">
-            Checking session...
-          </p>
-        </motion.div>
-      </div>
-    );
-  }
-
   return (
     <AuthContext.Provider value={{ user, loading, login, logout }}>
-      {children}
+      {loading ? (
+        // ✅ LOADER (unchanged UI)
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex flex-col items-center gap-4"
+          >
+            <motion.h1
+              animate={{ opacity: [0.4, 1, 0.4] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+              className="text-2xl font-bold text-[var(--accent-color)]"
+            >
+              CurrentNews365
+            </motion.h1>
+
+            <div className="flex gap-2">
+              {[1, 2, 3].map((i) => (
+                <motion.span
+                  key={i}
+                  animate={{ height: [8, 24, 8] }}
+                  transition={{
+                    duration: 0.8,
+                    repeat: Infinity,
+                    delay: i * 0.15,
+                  }}
+                  className="w-2 bg-[var(--accent-color)] rounded"
+                />
+              ))}
+            </div>
+
+          </motion.div>
+        </div>
+      ) : (
+        children
+      )}
     </AuthContext.Provider>
   );
 };

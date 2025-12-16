@@ -10,10 +10,17 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Posts from "./pages/Posts";
 import Editor from "./pages/Editor";
-// ✅ Main Public Site Page
+
+// ✅ Main Public Site Pages
 import MainSite from "./pages/MainSite";
 import PostDetail from "./pages/PostDetail";
-// 🆕 create this page as your public homepage
+
+// 🆕 Static Pages
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Terms from "./pages/Terms";
+import EditorialPolicy  from "./pages/EditorialPolicy";
 
 // ✅ Protected Route wrapper
 function ProtectedRoute({ children }) {
@@ -37,6 +44,13 @@ export default function App() {
       {/* 🌍 Public Main Site */}
       <Route path="/" element={<MainSite />} />
       <Route path="/:slug" element={<PostDetail />} />
+
+      {/* 📄 Static Pages */}
+      <Route path="/about" element={<About />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/terms" element={<Terms />} />
+      <Route path="/editorial-policy" element={<EditorialPolicy />} />
       {/* 🔓 Public Route */}
       <Route path="/login" element={<Login />} />
 
