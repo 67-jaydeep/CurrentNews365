@@ -64,25 +64,35 @@ router.post(
     user.failedLoginAttempts = 0;
     user.lockedUntil = null;
 
-    const tokenId = crypto.randomBytes(16).toString('hex');
-    const refresh = signRefreshToken(user, tokenId);
-    user.refreshTokens.push({
-      tokenId,
-      ip: req.ip,
-      userAgent: req.headers['user-agent'],
-    });
-    await user.save();
+const tokenId = crypto.randomBytes(16).toString('hex');
+const refreshToken = signRefreshToken(user, tokenId);
 
-    const access = signAccessToken(user);
+if (!Array.isArray(user.refreshTokens)) {
+  user.refreshTokens = [];
+}
 
-    res.cookie('refreshToken', Refresh, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none',
-      path: '/',
-      maxAge: REFRESH_EXP,
-    });
+user.refreshTokens.push({
+  tokenId,
+  ip: req.ip,
+  userAgent: req.headers['user-agent'],
+});
 
+await user.save();
+
+const accessToken = signAccessToken(user);
+
+res.cookie('refreshToken', refreshToken, {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'none',
+  path: '/',
+  maxAge: REFRESH_EXP,
+});
+
+res.json({
+  accessToken,
+  user: { id: user._id, name: user.name, email: user.email },
+});
     await Audit.create({
       userId: user._id,
       userEmail: user.email,
@@ -100,41 +110,58 @@ router.post(
 // --- REFRESH ---
 router.post('/refresh', async (req, res) => {
   const cookie = req.cookies.refreshToken;
-  if (!cookie) return res.status(401).json({ msg: 'Missing refresh token' });
+  if (!cookie) {
+    return res.status(401).json({ msg: 'Missing refresh token' });
+  }
+
   try {
     const payload = jwt.verify(cookie, JWT_SECRET);
     const user = await User.findById(payload.id);
-    const valid =
-      user &&
-      user.refreshTokens.find(
-        (t) => t.tokenId === payload.tokenId && !t.revokedAt
-      );
-    if (!valid) return res.status(401).json({ msg: 'Invalid refresh token' });
+
+    if (!user) {
+      return res.status(401).json({ msg: 'User not found' });
+    }
+
+    if (!Array.isArray(user.refreshTokens)) {
+      user.refreshTokens = [];
+    }
+
+    const valid = user.refreshTokens.find(
+      (t) => t.tokenId === payload.tokenId && !t.revokedAt
+    );
+
+    if (!valid) {
+      return res.status(401).json({ msg: 'Invalid refresh token' });
+    }
 
     const newTokenId = crypto.randomBytes(16).toString('hex');
-    const newRefresh = signRefreshToken(user, newTokenId);
+    const refreshToken = signRefreshToken(user, newTokenId);
+
     valid.revokedAt = new Date();
     user.refreshTokens.push({
       tokenId: newTokenId,
       ip: req.ip,
       userAgent: req.headers['user-agent'],
     });
+
     await user.save();
 
-    const access = signAccessToken(user);
-    res.cookie('refreshToken', newRefresh, {
+    const accessToken = signAccessToken(user);
+
+    res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'none',
       path: '/',
       maxAge: REFRESH_EXP,
     });
-    res.json({ accessToken: access });
-  } catch (e) {
-    res.status(401).json({ msg: 'Expired or invalid refresh token' });
+
+    return res.json({ accessToken });
+  } catch (err) {
+    // ✅ THIS PREVENTS 500 ERRORS
+    return res.status(401).json({ msg: 'Expired or invalid refresh token' });
   }
 });
-
 // --- LOGOUT ---
 router.post('/logout', async (req, res) => {
   const cookie = req.cookies.refreshToken;
