@@ -100,6 +100,8 @@ useEffect(() => {
       console.error("Error fetching posts:", err);
     } finally {
       setLoading(false);
+      console.log("API POSTS:", items);
+      console.log("COUNT:", items.length);
     }
   };
 
@@ -562,7 +564,7 @@ const hotTopics = useMemo(() => {
               {/* NEWS GRID — SAME CARDS + ANIMATIONS */}
               {filtered.length === 0 ? (
                 <div className="py-20 text-center text-gray-600 dark:text-gray-300">
-                  No posts found.
+                  POST COUNT: {filtered.length}
                 </div>
               ) : (
                 <>
