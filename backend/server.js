@@ -1,5 +1,7 @@
 // server.js
 require('dotenv').config();
+const fs = require("fs");          // ✅ ADD THIS
+const path = require("path");      // ✅ MOVE HERE (top)
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
@@ -126,7 +128,6 @@ if (NODE_ENV === 'production') {
 app.use(compression());
 
 //Serve uploaded media files
-const path = require("path");
 const uploadDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
