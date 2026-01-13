@@ -125,8 +125,17 @@ app.use(
   (req, res, next) => {
     const origin = req.headers.origin;
 
+    const allowedOrigins = [
+      "http://localhost:5173",
+      "https://currentnews365.com",
+      "https://www.currentnews365.com",
+      "https://current-news365.vercel.app",
+      "https://current-news365-sadhujaydeeps-projects.vercel.app"
+    ];
+
     if (allowedOrigins.includes(origin)) {
       res.setHeader("Access-Control-Allow-Origin", origin);
+      res.setHeader("Access-Control-Allow-Credentials", "true");
     }
 
     res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
