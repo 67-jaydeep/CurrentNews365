@@ -2,18 +2,15 @@ const express = require("express");
 const router = express.Router();
 const Post = require("../models/Post");
 
-/**
- * ============================
- * SITEMAP.XML
- * ============================
- */
+
+//SITEMAP.XML
 router.get("/sitemap.xml", async (req, res) => {
   try {
     const posts = await Post.find({ status: "published" })
       .select("slug updatedAt")
       .sort({ updatedAt: -1 });
 
-    const baseUrl = "https://currentnews365.com";
+    const baseUrl = process.env.SITE_URL || "http://localhost:5000";
 
     let xml = `<?xml version="1.0" encoding="UTF-8"?>`;
     xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
@@ -79,7 +76,7 @@ router.get("/rss.xml", async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(20);
 
-    const baseUrl = "https://currentnews365.com";
+    const baseUrl = process.env.SITE_URL || "http://localhost:5000";
 
     let rss = `<?xml version="1.0" encoding="UTF-8"?>`;
     rss += `
