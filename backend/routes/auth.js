@@ -7,35 +7,22 @@ const Post = require('../models/Post');
 const Summary = require('../models/Summary');  // ✅ Added for summary stats
 const router = express.Router();
 
-// ✅ ADD THIS BLOCK (CORS FIX)
-const cors = require('cors');
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://currentnews365.com",
-  "https://www.currentnews365.com",
-  "https://current-news365.vercel.app",
-  "https://current-news365-sadhujaydeeps-projects.vercel.app"
-];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    // allow Postman / server calls
-    if (!origin) return callback(null, true);
-
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-
-    return callback(new Error("Not allowed by CORS"));
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token']
-}));
-
 const JWT_SECRET = process.env.JWT_SECRET;
 const REFRESH_EXP =
   parseInt(process.env.REFRESH_TOKEN_EXPIRES_DAYS || '7') * 86400000;
+
+function requireAuth(req, res, next) {
+  const header = req.headers.authorization;
+  if (!header) return res.status(401).json({ msg: 'No token' });
+
+  try {
+    const token = header.split(' ')[1];
+    req.user = jwt.verify(token, JWT_SECRET);
+    next();
+  } catch {
+    return res.status(401).json({ msg: 'Invalid token' });
+  }
+}
 
 function signAccessToken(user) {
   return jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
@@ -88,10 +75,11 @@ router.post(
 
     const access = signAccessToken(user);
 
-    res.cookie('refreshToken', refresh, {
+    res.cookie('refreshToken', newRefresh, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
       maxAge: REFRESH_EXP,
     });
 
@@ -137,7 +125,8 @@ router.post('/refresh', async (req, res) => {
     res.cookie('refreshToken', newRefresh, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      sameSite: 'none',
+      path: '/',
       maxAge: REFRESH_EXP,
     });
     res.json({ accessToken: access });
@@ -162,7 +151,12 @@ router.post('/logout', async (req, res) => {
       }
     } catch {}
   }
-  res.clearCookie('refreshToken');
+  res.clearCookie('refreshToken', {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'none',
+  path: '/',
+});
   res.json({ msg: 'Logged out' });
 });
 
