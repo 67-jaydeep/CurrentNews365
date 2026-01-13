@@ -43,11 +43,7 @@ api.interceptors.response.use(
       original._retry = true
 
       try {
-        const refresh = await axios.post(
-          `${API_BASE.replace('/api', '')}/api/auth/refresh`,
-          {},
-          { withCredentials: true }
-        )
+        const refresh = await api.post('/auth/refresh');
 
         const newAccess = refresh.data?.accessToken
         if (newAccess) {
@@ -57,9 +53,6 @@ api.interceptors.response.use(
         }
       } catch (err) {
         clearAccessToken()
-        if (window.location.pathname !== '/login') {
-          window.location.href = '/login'
-        }
       }
     }
 
