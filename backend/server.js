@@ -12,6 +12,10 @@ const routes = require('./routes');
 const seoRoutes = require("./routes/seo");
 const bcrypt = require('bcrypt');
 const { User } = require('./models');
+const uploadDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/blogapp';
@@ -104,7 +108,14 @@ app.use(helmet({
       scriptSrc: ["'self'", "'unsafe-inline'", 'https:'],
       styleSrc: ["'self'", "'unsafe-inline'", 'https:'],
       imgSrc: ["'self'", 'data:', 'https:'],
-      connectSrc: ["'self'", FRONTEND_ORIGIN, 'https:'],
+      connectSrc: [
+          "'self'",
+          "https://currentnews365.com",
+          "https://www.currentnews365.com",
+          "https://current-news365.vercel.app",
+          "https://current-news365-sadhujaydeeps-projects.vercel.app",
+          "https://currentnews365-backend.onrender.com"
+        ],
       frameAncestors: ["'none'"],
       baseUri: ["'self'"]
     }

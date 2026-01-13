@@ -9,6 +9,8 @@ const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || "replace-me";
 
 function auth(req, res, next) {
+  if (req.method === "OPTIONS") return next(); 
+
   const header = req.headers.authorization;
   if (!header) return res.status(401).json({ msg: "No token" });
   try {
@@ -49,8 +51,8 @@ router.post(
   async (req, res) => {
     if (!req.file) return res.status(400).json({ msg: "No file uploaded" });
     try {
-      const baseUrl = process.env.SITE_URL;
-      const fileUrl = `${process.env.SITE_URL}/uploads/${req.file.filename}`;
+      const backendUrl = process.env.BACKEND_URL || "https://currentnews365-backend.onrender.com";  
+      const fileUrl = `${backendUrl}/uploads/${req.file.filename}`;
       const media = await Media.create({
         filename: req.file.filename,
         url: fileUrl,
