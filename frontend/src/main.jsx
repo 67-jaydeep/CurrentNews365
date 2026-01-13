@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./styles/index.css";
@@ -6,15 +6,33 @@ import "./styles/index.css";
 import { AuthProvider } from "./context/AuthContext";
 import { HelmetProvider } from "react-helmet-async";
 import { BrowserRouter } from "react-router-dom";
+import AppLoader from "./components/AppLoader";
+
+const Root = () => {
+  const [booted, setBooted] = useState(false);
+
+  useEffect(() => {
+    // allow CSS + fonts + theme to settle
+    const id = requestAnimationFrame(() => setBooted(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
+
+  return (
+    <>
+      {!booted && <AppLoader />}
+      <HelmetProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </AuthProvider>
+      </HelmetProvider>
+    </>
+  );
+};
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <HelmetProvider>
-      <AuthProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </AuthProvider>
-    </HelmetProvider>
+    <Root />
   </React.StrictMode>
 );

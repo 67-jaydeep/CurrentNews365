@@ -10,13 +10,15 @@ import {
   TrendingUp,
   Megaphone,
   Menu,
+  
 } from "lucide-react";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import api from "../api";
+import AppLoader from "../components/AppLoader";
 
 const PAGE_SIZE = 9;
 const SLIDE_INTERVAL = 5000; // ms
-
+const isBrowser = typeof window !== "undefined";
 // Utility: format category (Title Case)
 const formatCategory = (name = "") =>
   String(name)
@@ -50,6 +52,7 @@ function DesktopSearchBar({ value, onChange, onClear }) {
 
 export default function MainSite() {
   // --- core state ---
+  
   const [posts, setPosts] = useState([]);
   const [featured, setFeatured] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -57,14 +60,14 @@ export default function MainSite() {
   const [activeCat, setActiveCat] = useState("all");
   const [page, setPage] = useState(1);
   const [dark, setDark] = useState(
-    typeof document !== "undefined" && document.documentElement.classList.contains("dark")
+  isBrowser && document.documentElement.classList.contains("dark")
   );
   const [showSearch, setShowSearch] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // slider state (Top Stories Hero Slider)
   const [slideIndex, setSlideIndex] = useState(0);
-
+  
   // refs
   const trendingRef = useRef(null);
 
@@ -251,19 +254,21 @@ const hotTopics = useMemo(() => {
   // SEO values
   const siteTitle = "CurrentNews365";
   const siteDesc = featured?.metaDescription || featured?.excerpt || "CurrentNews365 — latest news and updates.";
-  const canonical = typeof window !== "undefined" ? window.location.origin + window.location.pathname : "/";
+  const canonical = isBrowser
+  ? window.location.origin + window.location.pathname
+  : "https://currentnews365.com";
   const jsonLd = {
     "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebSite",
-        "@id": `${typeof window !== "undefined" ? window.location.origin : ""}#website`,
-        url: typeof window !== "undefined" ? window.location.origin : "",
-        name: siteTitle,
-        description: siteDesc || "",
-      },
-    ],
+    "@type": "WebSite",
+    "@id": "https://currentnews365.com/#website",
+    url: "https://currentnews365.com",
+    name: siteTitle,
+    description: siteDesc || "",
   };
+
+    if (loading) {
+    return <AppLoader />;
+  }
   return (
     <HelmetProvider>
       <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -547,11 +552,7 @@ const hotTopics = useMemo(() => {
               </div>
 
               {/* NEWS GRID — SAME CARDS + ANIMATIONS */}
-              {loading ? (
-                <div className="py-20 text-center text-gray-600 dark:text-gray-300">
-                  Loading posts…
-                </div>
-              ) : filtered.length === 0 ? (
+              {filtered.length === 0 ? (
                 <div className="py-20 text-center text-gray-600 dark:text-gray-300">
                   No posts found.
                 </div>
@@ -707,16 +708,18 @@ const hotTopics = useMemo(() => {
           </li>
           <li>
             <a
-              href="/rss.xml"
-              className="hover:text-[var(--accent-color)] transition"
+              href={`${import.meta.env.VITE_API_BASE_URL}/rss.xml`}
+              target="_blank"
+              rel="noopener noreferrer"
             >
               RSS Feed
             </a>
           </li>
           <li>
             <a
-              href="/sitemap.xml"
-              className="hover:text-[var(--accent-color)] transition"
+              href={`${import.meta.env.VITE_API_BASE_URL}/sitemap.xml`}
+              target="_blank"
+              rel="noopener noreferrer"
             >
               Sitemap
             </a>

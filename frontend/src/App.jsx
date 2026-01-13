@@ -1,60 +1,87 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-
-// ✅ Context
 import { useAuth } from "./context/AuthContext";
+import { motion } from "framer-motion";
 
-// ✅ Layouts & Pages
+// Layouts & Pages
 import AdminLayout from "./layouts/AdminLayout";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Posts from "./pages/Posts";
 import Editor from "./pages/Editor";
 
-// ✅ Main Public Site Pages
 import MainSite from "./pages/MainSite";
 import PostDetail from "./pages/PostDetail";
 
-// 🆕 Static Pages
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
-import EditorialPolicy  from "./pages/EditorialPolicy";
+import EditorialPolicy from "./pages/EditorialPolicy";
 
-// ✅ Protected Route wrapper
+// 🔐 Protected Route (NO LOADER HERE)
 function ProtectedRoute({ children }) {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-gray-600 dark:text-gray-300">
-        Checking session...
-      </div>
-    );
-  }
-
+  const { user } = useAuth();
   if (!user) return <Navigate to="/login" replace />;
   return children;
 }
 
 export default function App() {
+  const { loading } = useAuth();
+
+  // ✅ APP GATE (SINGLE GLOBAL LOADER)
+  if (loading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="flex flex-col items-center gap-4"
+        >
+          <motion.h1
+            animate={{ opacity: [0.4, 1, 0.4] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+            className="text-2xl font-bold text-[var(--accent-color)]"
+          >
+            CurrentNews365
+          </motion.h1>
+
+          <div className="flex gap-2">
+            {[1, 2, 3].map((i) => (
+              <motion.span
+                key={i}
+                animate={{ height: [8, 24, 8] }}
+                transition={{
+                  duration: 0.8,
+                  repeat: Infinity,
+                  delay: i * 0.15,
+                }}
+                className="w-2 bg-[var(--accent-color)] rounded"
+              />
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
+
+  // ✅ NORMAL APP AFTER AUTH RESOLVES
   return (
     <Routes>
-      {/* 🌍 Public Main Site */}
+      {/* Public Main Site */}
       <Route path="/" element={<MainSite />} />
-      <Route path="/:slug" element={<PostDetail />} />
 
-      {/* 📄 Static Pages */}
+      {/* Static Pages */}
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="/editorial-policy" element={<EditorialPolicy />} />
-      {/* 🔓 Public Route */}
+
+      {/* Auth */}
       <Route path="/login" element={<Login />} />
 
-      {/* 🔐 Protected Admin Routes */}
+      {/* Admin */}
       <Route
         path="/admin/dashboard"
         element={
@@ -66,7 +93,6 @@ export default function App() {
         }
       />
 
-      {/* 📝 Posts List */}
       <Route
         path="/admin/posts"
         element={
@@ -78,7 +104,6 @@ export default function App() {
         }
       />
 
-      {/* ✏️ Create Post */}
       <Route
         path="/admin/editor"
         element={
@@ -90,7 +115,6 @@ export default function App() {
         }
       />
 
-      {/* ✏️ Edit Post by ID */}
       <Route
         path="/admin/editor/:id"
         element={
@@ -102,7 +126,10 @@ export default function App() {
         }
       />
 
-      {/* Default Redirect */}
+      {/* Article */}
+      <Route path="/:slug" element={<PostDetail />} />
+
+      {/* Fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
