@@ -72,32 +72,33 @@ export default function MainSite() {
   const trendingRef = useRef(null);
 
   // fetch posts + summary
-  useEffect(() => {
-    const fetchAll = async () => {
-      try {
-        setLoading(true);
-        const [resPosts, resSummary] = await Promise.all([api.get("/"), api.get("/auth/summary")]);
-        const items = Array.isArray(resPosts.data) ? resPosts.data : [];
-        setPosts(items);
+useEffect(() => {
+  const fetchAll = async () => {
+    try {
+      setLoading(true);
 
-        // choose featured
-        let featuredPost = null;
-        const top = resSummary?.data?.topPost;
-        if (top && top.title) {
-          featuredPost =
-            items.find((p) => p.title === top.title) ||
-            items.find((p) => (p.category || "").toLowerCase() === (top.category || "").toLowerCase()) ||
-            null;
-        }
-        setFeatured(featuredPost || items.find((p) => p.status === "published") || items[0] || null);
-      } catch (err) {
-        console.error("Error fetching posts:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAll();
-  }, []);
+      const [resPosts] = await Promise.all([api.get("/")]);
+      const items = Array.isArray(resPosts.data) ? resPosts.data : [];
+      setPosts(items);
+
+      // choose featured (same fallback logic, no summary)
+      let featuredPost = null;
+
+      featuredPost =
+        items.find((p) => p.status === "published") ||
+        items[0] ||
+        null;
+
+      setFeatured(featuredPost);
+    } catch (err) {
+      console.error("Error fetching posts:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchAll();
+}, []);
+
 
   // --- derived lists ---
   const categories = useMemo(() => {
