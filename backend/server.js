@@ -1,4 +1,4 @@
-// server.js (CommonJS) — Secure Express app with httpOnly refresh cookie flow
+// server.js
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -9,10 +9,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const csurf = require('csurf');
 const routes = require('./routes');
-const fs = require('fs');
 const seoRoutes = require("./routes/seo");
-
-// 🧩 NEW: import model + bcrypt for admin creation
 const bcrypt = require('bcrypt');
 const { User } = require('./models');
 
@@ -21,18 +18,15 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/blogapp';
 const FRONTEND_ORIGIN = process.env.FRONTEND_URL || 'http://localhost:5173';
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
-// ------------------ Basic sanity checks ------------------
+//Basic sanity checks
 if (!process.env.JWT_SECRET) {
   console.warn('⚠️  WARNING: JWT_SECRET not set. Set a long random string in .env for production.');
 }
 
-// ------------------ Connect to MongoDB ------------------
+//Connect to MongoDB
 (async function connectDB() {
   try {
-    await mongoose.connect(MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
+    await mongoose.connect(MONGO_URI);
     console.log('✅ MongoDB connected');
 
     await createDefaultAdmin();
@@ -42,7 +36,7 @@ if (!process.env.JWT_SECRET) {
   }
 })();
 
-// ------------------ Auto-admin creation ------------------
+//Auto-admin creation
 async function createDefaultAdmin() {
   try {
     const email = process.env.ADMIN_EMAIL;
@@ -67,18 +61,15 @@ async function createDefaultAdmin() {
     });
 
     console.log('🎉 Default admin created successfully');
-    console.log('👉 Email:', email);
-    console.log('🔑 Password:', password);
   } catch (err) {
     console.error('❌ Error creating default admin:', err.message);
   }
 }
 
-// ------------------ App & Security Middlewares ------------------
+//App & Security Middlewares
 const app = express();
+app.set("trust proxy", 1);
 app.use(cookieParser());
-
-// ✅ FIX: move body parsers *before* mounting routes
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
@@ -110,7 +101,7 @@ if (NODE_ENV === 'production') {
 
 app.use(compression());
 
-// ✅ NEW: Serve uploaded media files
+//Serve uploaded media files
 const path = require("path");
 app.use(
   "/uploads",
@@ -123,7 +114,7 @@ app.use(
   express.static(path.join(__dirname, "uploads"))
 );
 
-// ------------------ Rate Limiting ------------------
+//Rate Limiting
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 300,
@@ -148,14 +139,14 @@ const csrfProtection = csurf({
   cookie: {
     httpOnly: true,
     secure: NODE_ENV === 'production',
-    sameSite: 'lax'
+    sameSite: NODE_ENV === 'production' ? 'none' : 'lax'
   }
 });
 
 const refreshCookieOpts = {
   httpOnly: true,
   secure: NODE_ENV === 'production',
-  sameSite: 'lax',
+  sameSite: NODE_ENV === 'production' ? 'none' : 'lax',
   path: '/api/auth/refresh'
 };
 
@@ -175,26 +166,16 @@ app.locals.refreshCookieOpts = refreshCookieOpts;
 app.locals.createLoginLimiter = createLoginLimiter;
 app.locals.csrfProtection = csrfProtection;
 
-/* ===========================
-   🛡️ Enhanced Security Block
-   =========================== */
+//Enhanced Security Block
+
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const morgan = require('morgan');
-const permissionsPolicy = require('permissions-policy'); // ✅ FIXED HERE
+const permissionsPolicy = require('permissions-policy');
 
-// ✅ Log all incoming requests
 app.use(morgan('combined'));
-
-/*
-  Robust query-clone middleware (REPLACES fragile assignments).
-  Purpose: ensure req.query is a plain, writable object so downstream
-  sanitizers (express-mongo-sanitize) won't attempt to set a getter-only property.
-  This is safe and runs BEFORE mongoSanitize().
-*/
 app.use((req, res, next) => {
   try {
-    // Replace the getter with a plain object clone (Express 5 issue)
     const q = req.query;
     if (q && typeof q === 'object') {
       const cloned = Object.fromEntries(Object.entries(q));
@@ -211,7 +192,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// ✅ Safe sanitization (no crash)
+//Safe sanitization
 app.use((req, res, next) => {
   try {
     require('express-mongo-sanitize')()(req, res, next);
@@ -222,7 +203,7 @@ app.use((req, res, next) => {
 });
 app.use(require('xss-clean')());
 
-// ✅ Enforce HTTPS in production
+//Enforce HTTPS in production
 if (NODE_ENV === 'production') {
   app.use((req, res, next) => {
     if (req.headers['x-forwarded-proto'] !== 'https') {
@@ -232,7 +213,7 @@ if (NODE_ENV === 'production') {
   });
 }
 
-// ✅ Extend Helmet with additional security headers
+//Extend Helmet with additional security headers
 app.use(helmet.noSniff());
 app.use(helmet.referrerPolicy({ policy: 'strict-origin-when-cross-origin' }));
 app.use(
@@ -246,18 +227,15 @@ app.use(
   })
 );
 
-// ✅ Cache & cross-origin hardening
+//Cache & cross-origin hardening
 app.use((req, res, next) => {
   res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, private");
   res.setHeader("Cross-Origin-Resource-Policy", "same-origin");
   res.setHeader("Cross-Origin-Embedder-Policy", "unsafe-none");
   next();
 });
-/* ===========================
-   🛡️ End Enhanced Security Block
-   =========================== */
 
-// ✅ Mount routes *after* all middleware
+//End Enhanced Security Block
 app.use('/api', require('./routes/media'));
 app.use('/api', routes);
 app.use("/", seoRoutes);
@@ -274,7 +252,7 @@ app.use((err, req, res, next) => {
   res.status(status).json({ msg: message });
 });
 
-// 🕒 Auto-publish scheduled posts every minute
+//Auto-publish scheduled posts every minute
 const { Post } = require("./models");
 setInterval(async () => {
   try {
