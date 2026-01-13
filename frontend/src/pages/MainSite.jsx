@@ -77,7 +77,7 @@ useEffect(() => {
     try {
       setLoading(true);
 
-      const [resPosts] = await Promise.all([api.get("/")]);
+      const [resPosts] = await Promise.all([api.get("/posts")]);
       const items = Array.isArray(resPosts.data) ? resPosts.data : [];
       setPosts(items);
 
