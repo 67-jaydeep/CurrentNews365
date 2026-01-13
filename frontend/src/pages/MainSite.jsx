@@ -77,25 +77,32 @@ useEffect(() => {
     try {
       setLoading(true);
 
-      const [resPosts] = await Promise.all([api.get("/posts")]);
+      // ✅ Fetch only public posts
+      const resPosts = await api.get("/");
       const items = Array.isArray(resPosts.data) ? resPosts.data : [];
+
       setPosts(items);
 
-      // choose featured (same fallback logic, no summary)
-      let featuredPost = null;
+      // ✅ Filter published posts
+      const published = items.filter(
+        (p) => p.status === "published" || !p.status
+      );
 
-      featuredPost =
-        items.find((p) => p.status === "published") ||
-        items[0] ||
-        null;
+      // ✅ Sort by views (DESC) for featured
+      const sortedByViews = [...published].sort(
+        (a, b) => (b.views || 0) - (a.views || 0)
+      );
 
-      setFeatured(featuredPost);
+      // ⭐ Set TOP VIEWED post as featured
+      setFeatured(sortedByViews[0] || null);
+
     } catch (err) {
       console.error("Error fetching posts:", err);
     } finally {
       setLoading(false);
     }
   };
+
   fetchAll();
 }, []);
 
