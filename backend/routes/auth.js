@@ -9,16 +9,29 @@ const router = express.Router();
 
 // ✅ ADD THIS BLOCK (CORS FIX)
 const cors = require('cors');
-const FRONTEND_ORIGIN = process.env.FRONTEND_URL || 'http://localhost:5173';
-router.use(
-  cors({
-    origin: FRONTEND_ORIGIN,
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token'],
-  })
-);
-// ✅ END FIX
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://currentnews365.com",
+  "https://www.currentnews365.com",
+  "https://current-news365.vercel.app",
+  "https://current-news365-sadhujaydeeps-projects.vercel.app"
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // allow Postman / server calls
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token']
+}));
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const REFRESH_EXP =
