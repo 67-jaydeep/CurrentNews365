@@ -49,7 +49,8 @@ router.post(
   async (req, res) => {
     if (!req.file) return res.status(400).json({ msg: "No file uploaded" });
     try {
-      const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+      const baseUrl = process.env.SITE_URL;
+      const fileUrl = `${process.env.SITE_URL}/uploads/${req.file.filename}`;
       const media = await Media.create({
         filename: req.file.filename,
         url: fileUrl,
