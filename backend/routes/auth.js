@@ -75,7 +75,7 @@ router.post(
 
     const access = signAccessToken(user);
 
-    res.cookie('refreshToken', newRefresh, {
+    res.cookie('refreshToken', Refresh, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'none',
