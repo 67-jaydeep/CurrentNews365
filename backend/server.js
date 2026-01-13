@@ -12,10 +12,6 @@ const routes = require('./routes');
 const seoRoutes = require("./routes/seo");
 const bcrypt = require('bcrypt');
 const { User } = require('./models');
-const uploadDir = path.join(__dirname, "uploads");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
 
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/blogapp';
@@ -131,6 +127,11 @@ app.use(compression());
 
 //Serve uploaded media files
 const path = require("path");
+const uploadDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 app.use(
   "/uploads",
   (req, res, next) => {
