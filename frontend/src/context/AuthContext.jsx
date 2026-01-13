@@ -37,8 +37,9 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const res = await api.post("/auth/login", { email, password });
-      setAccessToken(res.data.accessToken);
-      setUser(res.data.user);
+      await api.post('/auth/refresh');
+      const me = await api.get('/auth/me');
+      setUser(me.data.user);
       return { success: true };
     } catch (err) {
       return {
@@ -53,9 +54,12 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await api.post("/auth/logout");
-    } finally {
-      clearAccessToken();
-      setUser(null);
+    } catch (err) {
+  if (err.response?.status === 401 || err.response?.status === 403) {
+    clearAccessToken();
+    setUser(null);
+  }
+
     }
   };
 
