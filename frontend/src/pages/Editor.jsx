@@ -151,7 +151,7 @@ const config = useMemo(
     height: "60vh",
     theme: theme,
     toolbarSticky: true,
-    uploader: { insertImageAsBase64URI: false },
+    uploader: { insertImageAsBase64URI: true },
     image: { editImage: true, openOnDblClick: true, resize: true },
     defaultActionOnPaste: "insert_as_html",
   }),

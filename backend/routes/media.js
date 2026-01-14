@@ -1,7 +1,8 @@
 // backend/routes/media.js
 const express = require("express");
 const multer = require("multer");
-const path = require("path");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("../config/cloudinary");
 const Media = require("../models/Media");
 const jwt = require("jsonwebtoken");
 
@@ -22,21 +23,21 @@ function auth(req, res, next) {
   }
 }
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "uploads/"),
-  filename: (req, file, cb) => {
-    const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, unique + path.extname(file.originalname));
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "currentnews365",
+    allowed_formats: ["jpg", "jpeg", "png", "webp"],
+    public_id: (req, file) =>
+      Date.now() + "-" + file.originalname.replace(/\s+/g, "_"),
   },
 });
 
-const allowed = ["image/jpeg", "image/png", "image/webp", "video/mp4", "application/pdf"];
-const fileFilter = (req, file, cb) => {
-  if (allowed.includes(file.mimetype)) cb(null, true);
-  else cb(new Error("Invalid file type"));
-};
 
-const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 }, fileFilter });
+const upload = multer({
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+});
 
 router.post(
   "/admin/uploads",
@@ -51,8 +52,8 @@ router.post(
   async (req, res) => {
     if (!req.file) return res.status(400).json({ msg: "No file uploaded" });
     try {
-      const backendUrl = process.env.BACKEND_URL || "https://currentnews365-backend.onrender.com";  
-      const fileUrl = `${backendUrl}/uploads/${req.file.filename}`;
+
+      const fileUrl = req.file.path;
       const media = await Media.create({
         filename: req.file.filename,
         url: fileUrl,

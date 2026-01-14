@@ -17,11 +17,5 @@ try {
   console.error("❌ post route error:", err);
 }
 
-try {
-  router.use('/', require('./media'));
-  console.log("✅ media routes loaded");
-} catch (err) {
-  console.error("❌ media route error:", err);
-}
 
 module.exports = router;

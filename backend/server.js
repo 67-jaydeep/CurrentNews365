@@ -1,7 +1,5 @@
 // server.js
 require('dotenv').config();
-const fs = require("fs");          // ✅ ADD THIS
-const path = require("path");      // ✅ MOVE HERE (top)
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
@@ -105,7 +103,12 @@ app.use(helmet({
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'", "'unsafe-inline'", 'https:'],
       styleSrc: ["'self'", "'unsafe-inline'", 'https:'],
-      imgSrc: ["'self'", 'data:', 'https:'],
+      imgSrc: [
+        "'self'",
+        "data:",
+        "https:",
+        "https://res.cloudinary.com"
+      ],
       connectSrc: [
           "'self'",
           "https://currentnews365.com",
@@ -127,36 +130,6 @@ if (NODE_ENV === 'production') {
 
 app.use(compression());
 
-//Serve uploaded media files
-const uploadDir = path.join(__dirname, "uploads");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-app.use(
-  "/uploads",
-  (req, res, next) => {
-    const origin = req.headers.origin;
-
-    const allowedOrigins = [
-      "http://localhost:5173",
-      "https://currentnews365.com",
-      "https://www.currentnews365.com",
-      "https://current-news365.vercel.app",
-      "https://current-news365-sadhujaydeeps-projects.vercel.app"
-    ];
-
-    if (allowedOrigins.includes(origin)) {
-      res.setHeader("Access-Control-Allow-Origin", origin);
-      res.setHeader("Access-Control-Allow-Credentials", "true");
-    }
-
-    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-    res.setHeader("Cross-Origin-Embedder-Policy", "unsafe-none");
-    next();
-  },
-  express.static(path.join(__dirname, "uploads"))
-);
 
 //Rate Limiting
 const generalLimiter = rateLimit({
