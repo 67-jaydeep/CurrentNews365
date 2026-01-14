@@ -3,6 +3,18 @@
   "trailingSlash": false,
   "routes": [
     {
+      "src": "/sitemap.xml",
+      "dest": "https://currentnews365-backend.onrender.com/sitemap.xml"
+    },
+    {
+      "src": "/robots.txt",
+      "dest": "https://currentnews365-backend.onrender.com/robots.txt"
+    },
+    {
+      "src": "/rss.xml",
+      "dest": "https://currentnews365-backend.onrender.com/rss.xml"
+    },
+    {
       "src": "/assets/(.*)",
       "dest": "/assets/$1"
     },
