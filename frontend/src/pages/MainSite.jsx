@@ -717,22 +717,22 @@ const hotTopics = useMemo(() => {
             </Link>
           </li>
           <li>
-            <a
-              href={`${import.meta.env.VITE_API_BASE_URL}/rss.xml`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              RSS Feed
-            </a>
-          </li>
-          <li>
-            <a
-              href={`${import.meta.env.VITE_API_BASE_URL}/sitemap.xml`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Sitemap
-            </a>
+              <a
+                href="https://currentnews365-backend.onrender.com/rss.xml"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                RSS Feed
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://currentnews365-backend.onrender.com/sitemap.xml"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Sitemap
+              </a>
           </li>
         </ul>
       </div>
