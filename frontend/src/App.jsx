@@ -18,7 +18,7 @@ import Contact from "./pages/Contact";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
 import EditorialPolicy from "./pages/EditorialPolicy";
-
+console.log("DEPLOY_MARKER: 2026-01-14-LOGIN-FIX");
 // 🔐 Protected Route (NO LOADER HERE)
 function ProtectedRoute({ children }) {
   const { user } = useAuth();
