@@ -1,20 +1,14 @@
 {
-  "rewrites": [
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "routes": [
     {
-      "source": "/sitemap.xml",
-      "destination": "https://currentnews365-backend.onrender.com/sitemap.xml"
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
     },
     {
-      "source": "/rss.xml",
-      "destination": "https://currentnews365-backend.onrender.com/rss.xml"
-    },
-    {
-      "source": "/robots.txt",
-      "destination": "https://currentnews365-backend.onrender.com/robots.txt"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
