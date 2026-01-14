@@ -13,16 +13,8 @@
       "destination": "https://currentnews365-backend.onrender.com/robots.txt"
     },
     {
-      "source": "/login",
-      "destination": "/"
-    },
-    {
-      "source": "/admin/(.*)",
-      "destination": "/"
-    },
-    {
       "source": "/(.*)",
-      "destination": "/"
+      "destination": "/index.html"
     }
   ]
 }
