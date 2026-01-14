@@ -11,11 +11,20 @@ import AppLoader from "./components/AppLoader";
 const Root = () => {
   const [booted, setBooted] = useState(false);
 
-  useEffect(() => {
-    // allow CSS + fonts + theme to settle
-    const id = requestAnimationFrame(() => setBooted(true));
-    return () => cancelAnimationFrame(id);
-  }, []);
+useEffect(() => {
+  const id = requestAnimationFrame(() => {
+    setBooted(true);
+
+    const savedPath = sessionStorage.getItem('spa-path');
+    if (savedPath) {
+      sessionStorage.removeItem('spa-path');
+      sessionStorage.removeItem('spa-redirected');
+      window.history.replaceState(null, '', savedPath);
+    }
+  });
+
+  return () => cancelAnimationFrame(id);
+}, []);
 
   return (
     <>

@@ -1,5 +1,19 @@
 <!doctype html>
 <html lang="en">
+  <script>
+  (function () {
+    var pathname = window.location.pathname;
+    if (
+      pathname !== '/' &&
+      !pathname.includes('.') &&
+      !sessionStorage.getItem('spa-redirected')
+    ) {
+      sessionStorage.setItem('spa-redirected', '1');
+      sessionStorage.setItem('spa-path', pathname + window.location.search);
+      window.location.replace('/');
+    }
+  })();
+</script>
   <head>
     <meta charset="UTF-8" />
     <!-- Google fonts used by editor (10 fonts). Add inside <head> -->
@@ -13,7 +27,7 @@
     <title>CurrentNews365</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root" data-spa-root="true" ></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
