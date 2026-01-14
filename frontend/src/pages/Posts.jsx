@@ -14,7 +14,7 @@ import {
 import api from "../api";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
-
+import AppLoader from "../components/AppLoader";
 const Posts = () => {
   const { user } = useAuth();
   const [posts, setPosts] = useState([]);
@@ -107,9 +107,7 @@ const Posts = () => {
 
       {/* Loader */}
       {loading ? (
-        <div className="flex justify-center items-center py-20">
-          <Loader2 className="w-7 h-7 animate-spin text-[var(--accent-color)]" />
-        </div>
+        <AppLoader />
       ) : filteredPosts.length === 0 ? (
         <p className="text-gray-600 dark:text-gray-400 text-center py-10">
           No posts found.

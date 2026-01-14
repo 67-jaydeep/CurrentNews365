@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import api from "../api";
 import JoditEditor from "jodit-react";
 import "jodit/es5/jodit.min.css";
-
+import AppLoader from "../components/AppLoader";
 const slugify = (text = "") =>
   text
     .toLowerCase()
@@ -160,12 +160,9 @@ const config = useMemo(
 
   const handleEditorChange = (val) => setForm((s) => ({ ...s, content: val }));
 
-  if (loading)
-    return (
-      <div className="min-h-[60vh] flex items-center justify-center text-gray-600 dark:text-gray-300">
-        Loading...
-      </div>
-    );
+    if (loading) {
+    return <AppLoader />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">

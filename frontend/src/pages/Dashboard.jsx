@@ -26,7 +26,7 @@ import {
   Pie,
   Cell,
 } from "recharts";
-
+import AppLoader from "../components/AppLoader";
 const Dashboard = () => {
   const [data, setData] = useState(null);
   const [recentPosts, setRecentPosts] = useState([]);
@@ -99,12 +99,9 @@ const dailyViewsData = Array.isArray(data?.last7Days) && data.last7Days.length
     "color-mix(in srgb, var(--accent-color) 35%, white)",
   ];
 
-  if (loading)
-    return (
-      <div className="flex justify-center items-center h-[70vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-[var(--accent-color)]" />
-      </div>
-    );
+    if (loading) {
+    return <AppLoader />;
+  }
 
   const stats = [
     {
