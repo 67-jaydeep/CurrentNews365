@@ -15,7 +15,7 @@ import {
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import api from "../api";
 import AppLoader from "../components/AppLoader";
-
+const SITE_URL = "https://www.currentnews365.com";
 const PAGE_SIZE = 9;
 const SLIDE_INTERVAL = 5000; // ms
 const isBrowser = typeof window !== "undefined";
@@ -265,13 +265,13 @@ const hotTopics = useMemo(() => {
   const siteTitle = "CurrentNews365";
   const siteDesc = featured?.metaDescription || featured?.excerpt || "CurrentNews365 — latest news and updates.";
   const canonical = isBrowser
-  ? window.location.origin + window.location.pathname
-  : "https://currentnews365.com";
+    ? SITE_URL + window.location.pathname
+    : SITE_URL;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "@id": "https://currentnews365.com/#website",
-    url: "https://currentnews365.com",
+    "@id": `${SITE_URL}/#website`,
+    url: SITE_URL,
     name: siteTitle,
     description: siteDesc || "",
   };
