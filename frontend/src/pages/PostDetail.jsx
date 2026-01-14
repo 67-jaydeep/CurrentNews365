@@ -12,6 +12,7 @@ import {
   Twitter,
 } from "lucide-react";
 import api from "../api";
+import AppLoader from "../components/AppLoader";
 
 export default function PostDetail() {
   const { slug } = useParams();
@@ -57,13 +58,9 @@ export default function PostDetail() {
     return Math.ceil(words / 200);
   }, [post]);
 
-  if (loading)
-    return (
-      <div className="min-h-screen flex items-center justify-center text-gray-500 dark:text-gray-300">
-        Loading post...
-      </div>
-    );
-
+    if (loading) {
+    return <AppLoader />;
+  }
   if (!post)
     return (
       <div className="min-h-screen flex flex-col items-center justify-center text-gray-600 dark:text-gray-300">
