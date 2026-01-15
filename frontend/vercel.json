@@ -1,6 +1,14 @@
 {
   "rewrites": [
     {
+      "source": "/sitemap.xml",
+      "destination": "https://currentnews365-backend.onrender.com/sitemap.xml"
+    },
+    {
+      "source": "/rss.xml",
+      "destination": "https://currentnews365-backend.onrender.com/rss.xml"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
