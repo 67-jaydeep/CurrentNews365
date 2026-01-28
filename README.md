@@ -74,6 +74,7 @@ real-time news articles with SEO optimization, dynamic sitemap generation, and a
 ![Post Detail](ScreenShot/Frontend/PostdetailPage.png)
 
 **Mobile View**
+
 ![Mobile View](ScreenShot/Frontend/Mobileview.png)
 ![Mobile View](ScreenShot/Frontend/Mobileview1.png)
 
@@ -87,6 +88,7 @@ real-time news articles with SEO optimization, dynamic sitemap generation, and a
 ![Admin Dashboard](ScreenShot/Admin/Admindashboard.png)
 
 **Admin Panel – Mobile View**
+
 ![Admin Mobile](ScreenShot/Admin/MobileAdmin.png)
 
 **Post Management**
