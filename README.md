@@ -19,6 +19,7 @@ real-time news articles with SEO optimization, dynamic sitemap generation, and a
 - View-based trending & popular articles
 - Admin-ready backend architecture
 
+
 ## Tech Stack
 
 ### Frontend
@@ -38,6 +39,7 @@ real-time news articles with SEO optimization, dynamic sitemap generation, and a
 - **Frontend:** Vercel
 - **Backend:** Render
 
+
 ## SEO & Indexing
 
 - Sitemap: `/sitemap.xml`
@@ -46,12 +48,53 @@ real-time news articles with SEO optimization, dynamic sitemap generation, and a
 - Canonical URLs implemented
 - Google Search Console integrated
 
+
 ## Project Status
 
 - Fully deployed  
 - SEO-ready  
 - Production-grade  
-- Portfolio project  
+- Portfolio project
+
+
+## Screenshots
+
+### Frontend (Public Website)
+
+**Homepage**
+![Homepage](ScreenShot/Frontend/HomePage.png)
+![Homepage Variant](ScreenShot/Frontend/Homepage1.png)
+![Homepage Variant](ScreenShot/Frontend/Homepage2.png)
+
+**Dark Mode**
+![Homepage Dark](ScreenShot/Frontend/HomePageDark.png)
+
+**Article / Post Detail Page**
+![Post Detail](ScreenShot/Frontend/PostdetailPage.png)
+
+**Mobile View**
+![Mobile View](ScreenShot/Frontend/Mobileview.png)
+![Mobile View](ScreenShot/Frontend/Mobileview1.png)
+
+### Admin Panel (Demo Screenshots)
+
+> ⚠️ **Note:**  
+> The admin panel screenshots shown below use **anonymized demo data**.  
+> No client-sensitive information is exposed.
+
+**Admin Dashboard**
+![Admin Dashboard](ScreenShot/Admin/Admindashboard.png)
+
+**Admin Panel – Mobile View**
+![Admin Mobile](ScreenShot/Admin/MobileAdmin.png)
+
+**Post Management**
+![Admin Posts](ScreenShot/Admin/adminposts.png)
+
+**Post Editor**
+![Post Editor](ScreenShot/Admin/Posteditor1.png)
+![Post Editor](ScreenShot/Admin/Posteditor2.png)
+
 
 ## Author
 
@@ -59,3 +102,5 @@ real-time news articles with SEO optimization, dynamic sitemap generation, and a
 Full Stack Developer (MERN)
 
 Feel free to explore, fork, or provide feedback!
+
+
