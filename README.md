@@ -63,11 +63,12 @@ real-time news articles with SEO optimization, dynamic sitemap generation, and a
 
 **Homepage**
 ![Homepage](ScreenShot/Frontend/HomePage.png)
-![Homepage Variant](ScreenShot/Frontend/Homepage1.png)
-![Homepage Variant](ScreenShot/Frontend/Homepage2.png)
+
 
 **Dark Mode**
 ![Homepage Dark](ScreenShot/Frontend/HomePageDark.png)
+![Homepage Variant](ScreenShot/Frontend/Homepage1.png)
+![Homepage Variant](ScreenShot/Frontend/Homepage2.png)
 
 **Article / Post Detail Page**
 ![Post Detail](ScreenShot/Frontend/PostdetailPage.png)
